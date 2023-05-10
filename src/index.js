@@ -1,3 +1,20 @@
+const menu = document.querySelector('#ramen-menu')
+const ramenImage = document.querySelector('.detail-image');
+const ramenName = document.querySelector('.name');
+const restaurant = document.querySelector('.restaurant')
+const rating = document.querySelector('#rating-display')
+const comment = document.querySelector('#comment-display')
+const form = document.querySelector('#new-ramen')
+const deleteButton = document.createElement('button');
+deleteButton.textContent = 'Delete';
+deleteButton.style = 'color: white;background-color: black;position: relative;left: -70px;bottom: 24px;'
+deleteButton.addEventListener('mouseenter',()=>{
+    deleteButton.style.backgroundColor = 'dimgrey'
+})
+deleteButton.addEventListener('mouseleave',()=>{
+    deleteButton.style.backgroundColor = 'black'
+})
+document.querySelector('#ramen-detail').append(deleteButton)
 // write your code here
 function initialize(){
     fetch ('http://localhost:3000/ramens')
@@ -12,13 +29,6 @@ function initialize(){
         showRamen(data[0])
     })
 }
-const menu = document.querySelector('#ramen-menu')
-const ramenImage = document.querySelector('.detail-image');
-const ramenName = document.querySelector('.name');
-const restaurant = document.querySelector('.restaurant')
-const rating = document.querySelector('#rating-display')
-const comment = document.querySelector('#comment-display')
-const form = document.querySelector('#new-ramen')
 function showRamen(ramen){
     ramenImage.src = ramen.image;
     ramenName.textContent = ramen.name;
@@ -58,10 +68,6 @@ form.addEventListener('submit', (e)=>{
     form.reset();
 })
 //creates and formats a delete button
-const deleteButton = document.createElement('button');
-deleteButton.textContent = 'Delete';
-deleteButton.style = 'color: white;background-color: black;position: relative;left: -70px;bottom: 24px;'
-document.querySelector('#ramen-detail').append(deleteButton)
 deleteButton.addEventListener('click', ()=>deleteItem())
 function deleteItem(){
     fetch('http://localhost:3000/ramens')
