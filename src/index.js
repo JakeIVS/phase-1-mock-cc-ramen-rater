@@ -41,13 +41,16 @@ function initialize(){
     .then(r=>r.json())
     .then((data)=>{
         data.forEach(ramen=>{
-            const image = document.createElement('img');
-            image.src= ramen.image
-            menu.appendChild(image);
-            image.addEventListener('click', ()=>showRamen(ramen))
+            makeMenuItem(ramen)
         })
         showRamen(data[0])
     })
+}
+function makeMenuItem(item){
+    const image = document.createElement('img');
+    image.src= item.image
+    menu.appendChild(image);
+    image.addEventListener('click', ()=>showRamen(item))
 }
 function showRamen(ramen){
     ramenImage.src = ramen.image;
@@ -58,19 +61,14 @@ function showRamen(ramen){
 }
 form.addEventListener('submit', (e)=>{
     e.preventDefault();
-    let newName = form.querySelector('#new-name').value;
-    let newRestaurant = form.querySelector('#new-restaurant').value;
-    let newImage = form.querySelector('#new-image').value;
-    let newRating = form.querySelector('#new-rating').value;
-    let newComment = form.querySelector('#new-comment').value;
-    const image = document.createElement('img');
-    image.src = newImage;
-    menu.appendChild(image);
-    ramenImage.src = newImage;
-    ramenName.textContent = newName;
-    restaurant.textContent = newRestaurant
-    rating.textContent = newRating;
-    comment.textContent = newComment;
+    newRamen = {
+        name: form.querySelector('#new-name').value,
+        restaurant: form.querySelector('#new-restaurant').value,
+        image: form.querySelector('#new-image').value,
+        rating: form.querySelector('#new-rating').value,
+        comment: form.querySelector('#new-comment').value
+    }
+    makeMenuItem(newRamen)
     fetch('http://localhost:3000/ramens',{
         method:'POST',
         headers:{
@@ -78,13 +76,14 @@ form.addEventListener('submit', (e)=>{
             'accept':'application/json'
         },
         body: JSON.stringify({
-            "name": newName,
-            "restaurant": newRestaurant,
-            "image": newImage,
-            "rating": newRating,
-            "comment": newComment
+            "name": newRamen.name,
+            "restaurant": newRamen.restaurant,
+            "image": newRamen.image,
+            "rating": newRamen.rating,
+            "comment": newRamen.comment
         })
     })
+    showRamen(newRamen);
     form.reset();
 })
 //creates and formats a delete button
