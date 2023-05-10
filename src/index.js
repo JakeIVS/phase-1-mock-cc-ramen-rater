@@ -1,3 +1,4 @@
+// Declare needed global variables
 const menu = document.querySelector('#ramen-menu')
 const ramenImage = document.querySelector('.detail-image');
 const ramenName = document.querySelector('.name');
@@ -5,6 +6,7 @@ const restaurant = document.querySelector('.restaurant')
 const rating = document.querySelector('#rating-display')
 const comment = document.querySelector('#comment-display')
 const form = document.querySelector('#new-ramen')
+// Creates a Delete Button
 const deleteButton = document.createElement('button');
 deleteButton.textContent = 'Delete';
 deleteButton.style = 'color: white;background-color: black;position: relative;left: -70px;bottom: 24px;'
@@ -15,6 +17,24 @@ deleteButton.addEventListener('mouseleave',()=>{
     deleteButton.style.backgroundColor = 'black'
 })
 document.querySelector('#ramen-detail').append(deleteButton)
+document.querySelector('#ramen-detail').style.marginLeft = '70px'
+// Creates an "Edit Comment" form
+const editCommentForm = document.createElement('form');
+editCommentForm.id = 'comment-editor'
+const commentFormHeader = document.createElement('h4')
+commentFormHeader.textContent = 'Edit Comment'
+const commentBox = document.createElement('input');
+commentBox.type = 'text';
+commentBox.name = 'edited-comment';
+commentBox.id = 'edited-comment';
+commentBox.placeholder = 'New Comment Here'
+const commentSubmit = document.createElement('input');
+commentSubmit.type = 'submit'
+commentSubmit.value = 'Submit'
+editCommentForm.append(commentFormHeader);
+editCommentForm.append(commentBox);
+editCommentForm.append(commentSubmit);
+form.before(editCommentForm);
 // write your code here
 function initialize(){
     fetch ('http://localhost:3000/ramens')
@@ -85,4 +105,24 @@ function deleteItem(){
         }
     }))
 }
+editCommentForm.addEventListener('submit',(e)=>{
+    e.preventDefault();
+    let editedComment = commentBox.value
+    comment.textContent = editedComment;
+    fetch('http://localhost:3000/ramens')
+    .then(r=>r.json())
+    .then(data=>data.forEach(ramen=>{
+        if (ramen.name === ramenName.textContent) {
+            fetch(`http://localhost:3000/ramens/${ramen.id}`,{
+                method: 'PATCH',
+                headers:{
+                    'content-type':'application/json',
+                    'accepts': 'application/json'
+                },
+                body: JSON.stringify({"comment": editedComment})
+            })
+        }
+    }))
+  editCommentForm.reset();
+})
 initialize();
